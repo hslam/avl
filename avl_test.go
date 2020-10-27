@@ -16,13 +16,13 @@ func testAVL(n, j int, r bool, t *testing.T) {
 	tree := New(func(a, b interface{}) int {
 		av := a.(int)
 		bv := b.(int)
-		if av == bv {
-			return 0
-		}
 		if av < bv {
 			return -1
 		}
-		return 1
+		if av > bv {
+			return 1
+		}
+		return 0
 	})
 	if r {
 		for i := n - 1; i >= 0; i-- {
@@ -70,13 +70,13 @@ func TestRL(t *testing.T) {
 	tree := New(func(a, b interface{}) int {
 		av := a.(int)
 		bv := b.(int)
-		if av == bv {
-			return 0
-		}
 		if av < bv {
 			return -1
 		}
-		return 1
+		if av > bv {
+			return 1
+		}
+		return 0
 	})
 	tree.Insert(1)
 	traverse(tree.Root(), t)
@@ -94,13 +94,13 @@ func TestLR(t *testing.T) {
 	tree := New(func(a, b interface{}) int {
 		av := a.(int)
 		bv := b.(int)
-		if av == bv {
-			return 0
-		}
 		if av < bv {
 			return -1
 		}
-		return 1
+		if av > bv {
+			return 1
+		}
+		return 0
 	})
 	tree.Insert(3)
 	traverse(tree.Root(), t)
@@ -118,13 +118,13 @@ func TestDeleteRight(t *testing.T) {
 	tree := New(func(a, b interface{}) int {
 		av := a.(int)
 		bv := b.(int)
-		if av == bv {
-			return 0
-		}
 		if av < bv {
 			return -1
 		}
-		return 1
+		if av > bv {
+			return 1
+		}
+		return 0
 	})
 	for i := 0; i < 7; i++ {
 		tree.Insert(i)
@@ -149,13 +149,13 @@ func TestDeleteLeft(t *testing.T) {
 	tree := New(func(a, b interface{}) int {
 		av := a.(int)
 		bv := b.(int)
-		if av == bv {
-			return 0
-		}
 		if av < bv {
 			return -1
 		}
-		return 1
+		if av > bv {
+			return 1
+		}
+		return 0
 	})
 	for i := 0; i < 7; i++ {
 		tree.Insert(i)
@@ -180,13 +180,13 @@ func TestEmptyTree(t *testing.T) {
 	tree := New(func(a, b interface{}) int {
 		av := a.(int)
 		bv := b.(int)
-		if av == bv {
-			return 0
-		}
 		if av < bv {
 			return -1
 		}
-		return 1
+		if av > bv {
+			return 1
+		}
+		return 0
 	})
 	tree.Delete(0)
 	if tree.Root().Left() != nil {
@@ -201,13 +201,13 @@ func BenchmarkAVL(b *testing.B) {
 	tree := New(func(a, b interface{}) int {
 		av := a.(int)
 		bv := b.(int)
-		if av == bv {
-			return 0
-		}
 		if av < bv {
 			return -1
 		}
-		return 1
+		if av > bv {
+			return 1
+		}
+		return 0
 	})
 	for i := 0; i < b.N; i++ {
 		tree.Insert(i)
