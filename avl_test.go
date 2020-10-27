@@ -13,16 +13,11 @@ func TestAVL(t *testing.T) {
 }
 
 func testAVL(n, j int, r bool, t *testing.T) {
-	tree := New(func(a, b interface{}) int {
-		av := a.(int)
-		bv := b.(int)
-		if av < bv {
-			return -1
+	tree := New(func(a, b interface{}) bool {
+		if a.(int) < b.(int) {
+			return true
 		}
-		if av > bv {
-			return 1
-		}
-		return 0
+		return false
 	})
 	if r {
 		for i := n - 1; i >= 0; i-- {
@@ -67,16 +62,11 @@ func testNilNode(tree *Tree, j int, t *testing.T) {
 }
 
 func TestRL(t *testing.T) {
-	tree := New(func(a, b interface{}) int {
-		av := a.(int)
-		bv := b.(int)
-		if av < bv {
-			return -1
+	tree := New(func(a, b interface{}) bool {
+		if a.(int) < b.(int) {
+			return true
 		}
-		if av > bv {
-			return 1
-		}
-		return 0
+		return false
 	})
 	tree.Insert(1)
 	traverse(tree.Root(), t)
@@ -91,16 +81,11 @@ func TestRL(t *testing.T) {
 }
 
 func TestLR(t *testing.T) {
-	tree := New(func(a, b interface{}) int {
-		av := a.(int)
-		bv := b.(int)
-		if av < bv {
-			return -1
+	tree := New(func(a, b interface{}) bool {
+		if a.(int) < b.(int) {
+			return true
 		}
-		if av > bv {
-			return 1
-		}
-		return 0
+		return false
 	})
 	tree.Insert(3)
 	traverse(tree.Root(), t)
@@ -115,16 +100,11 @@ func TestLR(t *testing.T) {
 }
 
 func TestDeleteRight(t *testing.T) {
-	tree := New(func(a, b interface{}) int {
-		av := a.(int)
-		bv := b.(int)
-		if av < bv {
-			return -1
+	tree := New(func(a, b interface{}) bool {
+		if a.(int) < b.(int) {
+			return true
 		}
-		if av > bv {
-			return 1
-		}
-		return 0
+		return false
 	})
 	for i := 0; i < 7; i++ {
 		tree.Insert(i)
@@ -146,16 +126,11 @@ func TestDeleteRight(t *testing.T) {
 }
 
 func TestDeleteLeft(t *testing.T) {
-	tree := New(func(a, b interface{}) int {
-		av := a.(int)
-		bv := b.(int)
-		if av < bv {
-			return -1
+	tree := New(func(a, b interface{}) bool {
+		if a.(int) < b.(int) {
+			return true
 		}
-		if av > bv {
-			return 1
-		}
-		return 0
+		return false
 	})
 	for i := 0; i < 7; i++ {
 		tree.Insert(i)
@@ -177,16 +152,11 @@ func TestDeleteLeft(t *testing.T) {
 }
 
 func TestEmptyTree(t *testing.T) {
-	tree := New(func(a, b interface{}) int {
-		av := a.(int)
-		bv := b.(int)
-		if av < bv {
-			return -1
+	tree := New(func(a, b interface{}) bool {
+		if a.(int) < b.(int) {
+			return true
 		}
-		if av > bv {
-			return 1
-		}
-		return 0
+		return false
 	})
 	tree.Delete(0)
 	if tree.Root().Left() != nil {
@@ -198,16 +168,11 @@ func TestEmptyTree(t *testing.T) {
 }
 
 func BenchmarkAVL(b *testing.B) {
-	tree := New(func(a, b interface{}) int {
-		av := a.(int)
-		bv := b.(int)
-		if av < bv {
-			return -1
+	tree := New(func(a, b interface{}) bool {
+		if a.(int) < b.(int) {
+			return true
 		}
-		if av > bv {
-			return 1
-		}
-		return 0
+		return false
 	})
 	for i := 0; i < b.N; i++ {
 		tree.Insert(i)

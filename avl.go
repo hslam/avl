@@ -8,41 +8,41 @@ import (
 	"sync"
 )
 
-// CompareFunc is the compare function returns an integer comparing two values.
-// The result will be 0 if a==b, -1 if a < b, and +1 if a > b.
-type CompareFunc func(a, b interface{}) int
+// LessFunc is the less function returns an boolean.
+// The result will be true if a < b.
+type LessFunc func(a, b interface{}) bool
 
-// New returns a new AVL tree with the CompareFunc compare.
-func New(compare CompareFunc) *Tree {
-	return &Tree{Compare: compare}
+// New returns a new AVL tree with the LessFunc less.
+func New(less LessFunc) *Tree {
+	return &Tree{Less: less}
 }
 
 // Tree represents an AVL tree.
 type Tree struct {
-	mu      sync.Mutex
-	root    *Node
-	Compare CompareFunc
+	mu   sync.Mutex
+	root *Node
+	Less LessFunc
 }
 
 // Search searchs the node of the AVL tree with the value v.
 func (t *Tree) Search(v interface{}) *Node {
 	t.mu.Lock()
 	defer t.mu.Unlock()
-	return t.root.search(t.Compare, v)
+	return t.root.search(t.Less, v)
 }
 
 // Insert inserts the value v into the AVL tree.
 func (t *Tree) Insert(v interface{}) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
-	t.root = t.root.insert(t.Compare, v)
+	t.root = t.root.insert(t.Less, v)
 }
 
 // Delete deletes the node of the AVL tree with the value v.
 func (t *Tree) Delete(v interface{}) {
 	defer t.mu.Unlock()
 	t.mu.Lock()
-	t.root = t.root.delete(t.Compare, v)
+	t.root = t.root.delete(t.Less, v)
 }
 
 // Root returns the root node of the AVL tree.
@@ -84,45 +84,42 @@ func (n *Node) Right() *Node {
 	return n.right
 }
 
-func (n *Node) search(compare CompareFunc, v interface{}) *Node {
+func (n *Node) search(less LessFunc, v interface{}) *Node {
 	if n != nil {
-		switch compare(v, n.Value) {
-		case -1:
-			return n.left.search(compare, v)
-		case 0:
+		if less(v, n.Value) {
+			return n.left.search(less, v)
+		} else if less(n.Value, v) {
+			return n.right.search(less, v)
+		} else {
 			return n
-		case 1:
-			return n.right.search(compare, v)
 		}
 	}
 	return nil
 }
 
-func (n *Node) insert(compare CompareFunc, v interface{}) *Node {
+func (n *Node) insert(less LessFunc, v interface{}) *Node {
 	if n == nil {
 		return &Node{Value: v}
 	}
-	switch compare(v, n.Value) {
-	case -1:
-		n.left = n.left.insert(compare, v)
-	case 0, 1:
-		n.right = n.right.insert(compare, v)
+	if less(v, n.Value) {
+		n.left = n.left.insert(less, v)
+	} else {
+		n.right = n.right.insert(less, v)
 	}
 	return n.rebalance()
 }
 
-func (n *Node) delete(compare CompareFunc, v interface{}) *Node {
+func (n *Node) delete(less LessFunc, v interface{}) *Node {
 	if n == nil {
 		return nil
 	}
-	switch compare(v, n.Value) {
-	case -1:
-		n.left = n.left.delete(compare, v)
+	if less(v, n.Value) {
+		n.left = n.left.delete(less, v)
 		return n.rebalance()
-	case 1:
-		n.right = n.right.delete(compare, v)
+	} else if less(n.Value, v) {
+		n.right = n.right.delete(less, v)
 		return n.rebalance()
-	default:
+	} else {
 		if n.left == nil && n.right == nil {
 			return nil
 		}
@@ -137,6 +134,7 @@ func (n *Node) delete(compare CompareFunc, v interface{}) *Node {
 		min.left = n.left
 		return min.rebalance()
 	}
+
 }
 
 func (n *Node) deleteMin() (min *Node, parent *Node) {
