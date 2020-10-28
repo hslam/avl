@@ -4,10 +4,6 @@
 // Package avl implements an AVL tree.
 package avl
 
-import (
-	"sync"
-)
-
 // LessFunc is the less function returns an boolean.
 // The result will be true if a < b.
 type LessFunc func(a, b interface{}) bool
@@ -19,36 +15,27 @@ func New(less LessFunc) *Tree {
 
 // Tree represents an AVL tree.
 type Tree struct {
-	mu   sync.Mutex
 	root *Node
 	Less LessFunc
 }
 
 // Search searchs the node of the AVL tree with the value v.
 func (t *Tree) Search(v interface{}) *Node {
-	t.mu.Lock()
-	defer t.mu.Unlock()
 	return t.root.search(t.Less, v)
 }
 
 // Insert inserts the value v into the AVL tree.
 func (t *Tree) Insert(v interface{}) {
-	t.mu.Lock()
-	defer t.mu.Unlock()
 	t.root = t.root.insert(t.Less, v)
 }
 
 // Delete deletes the node of the AVL tree with the value v.
 func (t *Tree) Delete(v interface{}) {
-	defer t.mu.Unlock()
-	t.mu.Lock()
 	t.root = t.root.delete(t.Less, v)
 }
 
 // Root returns the root node of the AVL tree.
 func (t *Tree) Root() *Node {
-	defer t.mu.Unlock()
-	t.mu.Lock()
 	return t.root
 }
 
