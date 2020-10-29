@@ -22,13 +22,18 @@ import (
 )
 
 func main() {
-	t := avl.New(func(a, b interface{}) bool {
-		return a.(string) < b.(string)
-	})
-	str := "Hello World"
+	t := avl.New()
+	str := String("Hello World")
 	t.Insert(str)
-	fmt.Println(t.Search(str).Value)
+	fmt.Println(t.Search(str).Item())
 	t.Delete(str)
+}
+
+type String string
+
+func (a String) Less(than avl.Item) bool {
+	b, _ := than.(String)
+	return a < b
 }
 ```
 

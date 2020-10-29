@@ -13,22 +13,20 @@ func TestAVL(t *testing.T) {
 }
 
 func testAVL(n, j int, r bool, t *testing.T) {
-	tree := New(func(a, b interface{}) bool {
-		return a.(int) < b.(int)
-	})
+	tree := New()
 	if r {
 		for i := n - 1; i >= 0; i-- {
-			tree.Insert(i)
+			tree.Insert(Int(i))
 			traverse(tree.Root(), t)
 		}
 	} else {
 		for i := 0; i < n; i++ {
-			tree.Insert(i)
+			tree.Insert(Int(i))
 			traverse(tree.Root(), t)
 		}
 	}
 	testSearch(tree, j, t)
-	tree.Delete(j)
+	tree.Delete(Int(j))
 	traverse(tree.Root(), t)
 	testNilNode(tree, j, t)
 }
@@ -45,28 +43,26 @@ func traverse(node *Node, t *testing.T) {
 }
 
 func testSearch(tree *Tree, j int, t *testing.T) {
-	if node := tree.Search(j); node == nil {
+	if node := tree.Search(Int(j)); node == nil {
 		t.Error("")
-	} else if node.Value.(int) != j {
+	} else if int(node.Item().(Int)) != j {
 		t.Error("")
 	}
 }
 
 func testNilNode(tree *Tree, j int, t *testing.T) {
-	if node := tree.Search(j); node != nil {
+	if node := tree.Search(Int(j)); node != nil {
 		t.Error("")
 	}
 }
 
 func TestRL(t *testing.T) {
-	tree := New(func(a, b interface{}) bool {
-		return a.(int) < b.(int)
-	})
-	tree.Insert(1)
+	tree := New()
+	tree.Insert(Int(1))
 	traverse(tree.Root(), t)
-	tree.Insert(3)
+	tree.Insert(Int(3))
 	traverse(tree.Root(), t)
-	tree.Insert(2)
+	tree.Insert(Int(2))
 	traverse(tree.Root(), t)
 	testSearch(tree, 1, t)
 	testSearch(tree, 2, t)
@@ -75,14 +71,12 @@ func TestRL(t *testing.T) {
 }
 
 func TestLR(t *testing.T) {
-	tree := New(func(a, b interface{}) bool {
-		return a.(int) < b.(int)
-	})
-	tree.Insert(3)
+	tree := New()
+	tree.Insert(Int(3))
 	traverse(tree.Root(), t)
-	tree.Insert(1)
+	tree.Insert(Int(1))
 	traverse(tree.Root(), t)
-	tree.Insert(2)
+	tree.Insert(Int(2))
 	traverse(tree.Root(), t)
 
 	testSearch(tree, 1, t)
@@ -91,22 +85,20 @@ func TestLR(t *testing.T) {
 }
 
 func TestDeleteRight(t *testing.T) {
-	tree := New(func(a, b interface{}) bool {
-		return a.(int) < b.(int)
-	})
+	tree := New()
 	for i := 0; i < 7; i++ {
-		tree.Insert(i)
+		tree.Insert(Int(i))
 		traverse(tree.Root(), t)
 	}
 	testSearch(tree, 6, t)
 	testSearch(tree, 5, t)
 	testSearch(tree, 4, t)
 
-	tree.Delete(6)
+	tree.Delete(Int(6))
 	traverse(tree.Root(), t)
-	tree.Delete(5)
+	tree.Delete(Int(5))
 	traverse(tree.Root(), t)
-	tree.Delete(4)
+	tree.Delete(Int(4))
 	traverse(tree.Root(), t)
 	testNilNode(tree, 6, t)
 	testNilNode(tree, 5, t)
@@ -114,22 +106,20 @@ func TestDeleteRight(t *testing.T) {
 }
 
 func TestDeleteLeft(t *testing.T) {
-	tree := New(func(a, b interface{}) bool {
-		return a.(int) < b.(int)
-	})
+	tree := New()
 	for i := 0; i < 7; i++ {
-		tree.Insert(i)
+		tree.Insert(Int(i))
 		traverse(tree.Root(), t)
 	}
 	testSearch(tree, 0, t)
 	testSearch(tree, 1, t)
 	testSearch(tree, 2, t)
 
-	tree.Delete(0)
+	tree.Delete(Int(0))
 	traverse(tree.Root(), t)
-	tree.Delete(1)
+	tree.Delete(Int(1))
 	traverse(tree.Root(), t)
-	tree.Delete(2)
+	tree.Delete(Int(2))
 	traverse(tree.Root(), t)
 	testNilNode(tree, 0, t)
 	testNilNode(tree, 1, t)
@@ -137,25 +127,32 @@ func TestDeleteLeft(t *testing.T) {
 }
 
 func TestEmptyTree(t *testing.T) {
-	tree := New(func(a, b interface{}) bool {
-		return a.(int) < b.(int)
-	})
-	tree.Delete(0)
+	tree := New()
+	tree.Delete(Int(0))
 	if tree.Root().Left() != nil {
 		t.Error("")
 	}
 	if tree.Root().Right() != nil {
 		t.Error("")
 	}
+	if tree.Root().Item() != nil {
+		t.Error("")
+	}
 }
 
 func BenchmarkAVL(b *testing.B) {
-	tree := New(func(a, b interface{}) bool {
-		return a.(int) < b.(int)
-	})
+	tree := New()
 	for i := 0; i < b.N; i++ {
-		tree.Insert(i)
-		tree.Search(i)
-		tree.Delete(i)
+		tree.Insert(Int(i))
+		tree.Search(Int(i))
+		tree.Delete(Int(i))
+	}
+}
+
+func TestStringLess(t *testing.T) {
+	a := String("a")
+	b := String("b")
+	if !a.Less(b) {
+		t.Error("")
 	}
 }
