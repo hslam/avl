@@ -49,8 +49,13 @@ func (t *Tree) Root() *Node {
 	return t.root
 }
 
-// Search searchs the node of the AVL tree with the value v.
-func (t *Tree) Search(item Item) *Node {
+// Search searchs the Item of the AVL tree.
+func (t *Tree) Search(item Item) Item {
+	return t.root.search(item).Item()
+}
+
+// SearchNode searchs the node of the AVL tree with the item.
+func (t *Tree) SearchNode(item Item) *Node {
 	return t.root.search(item)
 }
 
