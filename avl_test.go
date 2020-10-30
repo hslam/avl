@@ -9,7 +9,6 @@ func TestAVL(t *testing.T) {
 		testAVL(15, i, true, t)
 		testAVL(15, i, false, t)
 	}
-
 }
 
 func testAVL(n, j int, r bool, t *testing.T) {
@@ -25,10 +24,16 @@ func testAVL(n, j int, r bool, t *testing.T) {
 			traverse(tree.Root(), t)
 		}
 	}
+	if tree.Length() != n {
+		t.Error("")
+	}
 	testSearch(tree, j, t)
 	tree.Delete(Int(j))
 	traverse(tree.Root(), t)
 	testNilNode(tree, j, t)
+	if tree.Length() != n-1 {
+		t.Error("")
+	}
 }
 
 func traverse(node *Node, t *testing.T) {

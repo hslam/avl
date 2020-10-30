@@ -35,7 +35,18 @@ func New() *Tree {
 
 // Tree represents an AVL tree.
 type Tree struct {
-	root *Node
+	length int
+	root   *Node
+}
+
+// Length returns the number of items currently in the AVL tree.
+func (t *Tree) Length() int {
+	return t.length
+}
+
+// Root returns the root node of the AVL tree.
+func (t *Tree) Root() *Node {
+	return t.root
 }
 
 // Search searchs the node of the AVL tree with the value v.
@@ -45,17 +56,20 @@ func (t *Tree) Search(item Item) *Node {
 
 // Insert inserts the value v into the AVL tree.
 func (t *Tree) Insert(item Item) {
-	t.root = t.root.insert(item)
+	var ok bool
+	t.root, ok = t.root.insert(item)
+	if ok {
+		t.length++
+	}
 }
 
 // Delete deletes the node of the AVL tree with the value v.
 func (t *Tree) Delete(item Item) {
-	t.root = t.root.delete(item)
-}
-
-// Root returns the root node of the AVL tree.
-func (t *Tree) Root() *Node {
-	return t.root
+	var ok bool
+	t.root, ok = t.root.delete(item)
+	if ok {
+		t.length--
+	}
 }
 
 // Node represents a node in the AVL tree.
@@ -111,42 +125,42 @@ func (n *Node) search(item Item) *Node {
 	return nil
 }
 
-func (n *Node) insert(item Item) *Node {
+func (n *Node) insert(item Item) (root *Node, ok bool) {
 	if n == nil {
-		return &Node{item: item}
+		return &Node{item: item}, true
 	}
 	if item.Less(n.item) {
-		n.left = n.left.insert(item)
+		n.left, ok = n.left.insert(item)
 	} else {
-		n.right = n.right.insert(item)
+		n.right, ok = n.right.insert(item)
 	}
-	return n.rebalance()
+	return n.rebalance(), ok
 }
 
-func (n *Node) delete(item Item) *Node {
+func (n *Node) delete(item Item) (root *Node, ok bool) {
 	if n == nil {
-		return nil
+		return nil, false
 	}
 	if item.Less(n.item) {
-		n.left = n.left.delete(item)
-		return n.rebalance()
+		n.left, ok = n.left.delete(item)
+		return n.rebalance(), ok
 	} else if n.item.Less(item) {
-		n.right = n.right.delete(item)
-		return n.rebalance()
+		n.right, ok = n.right.delete(item)
+		return n.rebalance(), ok
 	} else {
 		if n.left == nil && n.right == nil {
-			return nil
+			return nil, true
 		}
 		if n.right == nil {
-			return n.left
+			return n.left, true
 		}
 		if n.left == nil {
-			return n.right
+			return n.right, true
 		}
 		min, right := n.right.deleteMin()
 		min.right = right
 		min.left = n.left
-		return min.rebalance()
+		return min.rebalance(), true
 	}
 
 }
