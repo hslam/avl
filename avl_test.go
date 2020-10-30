@@ -197,8 +197,8 @@ func BenchmarkAVL(b *testing.B) {
 	tree := New()
 	for i := 0; i < b.N; i++ {
 		tree.Insert(Int(i))
-		tree.Search(Int(i))
-		tree.Delete(Int(i))
+		//tree.Search(Int(i))
+		//tree.Delete(Int(i))
 	}
 }
 
