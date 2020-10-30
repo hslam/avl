@@ -31,9 +31,8 @@ func main() {
 
 type String string
 
-func (a String) Less(than avl.Item) bool {
-	b, _ := than.(String)
-	return a < b
+func (a String) Less(b avl.Item) bool {
+	return a < b.(String)
 }
 ```
 
