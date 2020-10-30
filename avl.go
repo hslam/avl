@@ -80,6 +80,7 @@ type Node struct {
 	height int
 	left   *Node
 	right  *Node
+	parent *Node
 	item   Item
 }
 
@@ -107,12 +108,64 @@ func (n *Node) Right() *Node {
 	return n.right
 }
 
+// Parent returns the parent node.
+func (n *Node) Parent() *Node {
+	if n == nil {
+		return nil
+	}
+	return n.parent
+}
+
 // Item returns the item of this node.
 func (n *Node) Item() Item {
 	if n == nil {
 		return nil
 	}
 	return n.item
+}
+
+// Max returns the max node of this node's subtree.
+func (n *Node) Max() *Node {
+	for n.right != nil {
+		return n.right.Max()
+	}
+	return n
+}
+
+// Min returns the min node of this node's subtree.
+func (n *Node) Min() *Node {
+	for n.left != nil {
+		return n.left.Min()
+	}
+	return n
+}
+
+// Last returns the last node less than this node.
+func (n *Node) Last() *Node {
+	if n.left != nil {
+		return n.left.Max()
+	}
+	left := n
+	p := left.parent
+	for p != nil && left == p.left {
+		left = p
+		p = left.parent
+	}
+	return p
+}
+
+// Next returns the next node more than this node.
+func (n *Node) Next() *Node {
+	if n.right != nil {
+		return n.right.Min()
+	}
+	right := n
+	p := right.parent
+	for p != nil && right == p.right {
+		right = p
+		p = right.parent
+	}
+	return p
 }
 
 func (n *Node) search(item Item) *Node {
@@ -134,8 +187,14 @@ func (n *Node) insert(item Item) (root *Node, ok bool) {
 	}
 	if item.Less(n.item) {
 		n.left, ok = n.left.insert(item)
+		if n.left.Height() == 0 {
+			n.left.parent = n
+		}
 	} else {
 		n.right, ok = n.right.insert(item)
+		if n.right.Height() == 0 {
+			n.right.parent = n
+		}
 	}
 	return n.rebalance(), ok
 }
@@ -155,14 +214,24 @@ func (n *Node) delete(item Item) (root *Node, ok bool) {
 			return nil, true
 		}
 		if n.right == nil {
+			n.left.parent = n
 			return n.left, true
 		}
 		if n.left == nil {
+			n.right.parent = n
 			return n.right, true
 		}
+		p := n.parent
 		min, right := n.right.deleteMin()
 		min.right = right
+		if right != nil {
+			right.parent = min
+		}
 		min.left = n.left
+		if n.left != nil {
+			n.left.parent = min
+		}
+		min.parent = p
 		return min.rebalance(), true
 	}
 
@@ -207,6 +276,19 @@ func (n *Node) balanceFactor() int {
 func (n *Node) rotateLeft() *Node {
 	newParent := n.right
 	n.right = newParent.left
+	if newParent.left != nil {
+		newParent.left.parent = n
+	}
+	p := n.parent
+	if p != nil {
+		if n == p.left {
+			p.left = newParent
+		} else {
+			p.right = newParent
+		}
+	}
+	newParent.parent = p
+	n.parent = newParent
 	newParent.left = n
 	n.updateHeight()
 	newParent.updateHeight()
@@ -216,6 +298,19 @@ func (n *Node) rotateLeft() *Node {
 func (n *Node) rotateRight() *Node {
 	newParent := n.left
 	n.left = newParent.right
+	if newParent.right != nil {
+		newParent.right.parent = n
+	}
+	p := n.parent
+	if p != nil {
+		if n == p.left {
+			p.left = newParent
+		} else {
+			p.right = newParent
+		}
+	}
+	newParent.parent = p
+	n.parent = newParent
 	newParent.right = n
 	n.updateHeight()
 	newParent.updateHeight()
