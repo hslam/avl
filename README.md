@@ -25,7 +25,7 @@ func main() {
 	t := avl.New()
 	str := String("Hello World")
 	t.Insert(str)
-	fmt.Println(t.Search(str).Item())
+	fmt.Println(t.Search(str))
 	t.Delete(str)
 }
 
