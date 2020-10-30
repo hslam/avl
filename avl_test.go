@@ -16,12 +16,12 @@ func testAVL(n, j int, r bool, t *testing.T) {
 	if r {
 		for i := n - 1; i >= 0; i-- {
 			tree.Insert(Int(i))
-			traverse(tree.Root(), t)
+			testTraversal(tree, t)
 		}
 	} else {
 		for i := 0; i < n; i++ {
 			tree.Insert(Int(i))
-			traverse(tree.Root(), t)
+			testTraversal(tree, t)
 		}
 	}
 	if tree.Length() != n {
@@ -29,11 +29,17 @@ func testAVL(n, j int, r bool, t *testing.T) {
 	}
 	testSearch(tree, j, t)
 	tree.Delete(Int(j))
-	traverse(tree.Root(), t)
+	testTraversal(tree, t)
 	testNilNode(tree, j, t)
 	if tree.Length() != n-1 {
 		t.Error("")
 	}
+}
+
+func testTraversal(tree *Tree, t *testing.T) {
+	traverse(tree.Root(), t)
+	testIteratorAscend(tree, t)
+	testIteratorDescend(tree, t)
 }
 
 func traverse(node *Node, t *testing.T) {
@@ -44,6 +50,30 @@ func traverse(node *Node, t *testing.T) {
 	if node != nil {
 		traverse(node.Left(), t)
 		traverse(node.Right(), t)
+	}
+}
+
+func testIteratorAscend(tree *Tree, t *testing.T) {
+	iter := tree.Root().Min()
+	next := iter.Next()
+	for iter != nil && next != nil {
+		if !iter.Item().Less(next.Item()) {
+			t.Error("")
+		}
+		iter = next
+		next = iter.Next()
+	}
+}
+
+func testIteratorDescend(tree *Tree, t *testing.T) {
+	iter := tree.Root().Max()
+	last := iter.Last()
+	for iter != nil && last != nil {
+		if !last.Item().Less(iter.Item()) {
+			t.Error("")
+		}
+		iter = last
+		last = iter.Last()
 	}
 }
 
@@ -145,9 +175,22 @@ func TestEmptyTree(t *testing.T) {
 	if tree.Root().Right() != nil {
 		t.Error("")
 	}
+	if tree.Root().Parent() != nil {
+		t.Error("")
+	}
 	if tree.Root().Item() != nil {
 		t.Error("")
 	}
+	if tree.Length() != 0 {
+		t.Error("")
+	}
+	tree.Insert(Int(1))
+	tree.Insert(Int(2))
+	tree.Insert(Int(3))
+	if tree.Root().Min().Parent() != tree.Root() {
+		t.Error("")
+	}
+
 }
 
 func BenchmarkAVL(b *testing.B) {
