@@ -47,6 +47,16 @@ func (t *Tree) Root() *Node {
 	return t.root
 }
 
+// Max returns the max node of the AVL tree.
+func (t *Tree) Max() *Node {
+	return t.root.Max()
+}
+
+// Min returns the min node of the AVL tree.
+func (t *Tree) Min() *Node {
+	return t.root.Min()
+}
+
 // Search searches the Item of the AVL tree.
 func (t *Tree) Search(item Item) Item {
 	return t.root.search(item).Item()
@@ -57,7 +67,7 @@ func (t *Tree) SearchNode(item Item) *Node {
 	return t.root.search(item)
 }
 
-// Insert inserts the value v into the AVL tree.
+// Insert inserts the item into the AVL tree.
 func (t *Tree) Insert(item Item) {
 	var ok bool
 	t.root, ok = t.root.insert(item)
@@ -66,7 +76,13 @@ func (t *Tree) Insert(item Item) {
 	}
 }
 
-// Delete deletes the node of the AVL tree with the value v.
+// Clear removes all items from the AVL tree.
+func (t *Tree) Clear() {
+	t.root = nil
+	t.length = 0
+}
+
+// Delete deletes the node of the AVL tree with the item.
 func (t *Tree) Delete(item Item) {
 	var ok bool
 	t.root, ok = t.root.delete(item)
@@ -126,6 +142,9 @@ func (n *Node) Item() Item {
 
 // Max returns the max node of this node's subtree.
 func (n *Node) Max() *Node {
+	if n == nil {
+		return nil
+	}
 	for n.right != nil {
 		return n.right.Max()
 	}
@@ -134,6 +153,9 @@ func (n *Node) Max() *Node {
 
 // Min returns the min node of this node's subtree.
 func (n *Node) Min() *Node {
+	if n == nil {
+		return nil
+	}
 	for n.left != nil {
 		return n.left.Min()
 	}
@@ -142,6 +164,9 @@ func (n *Node) Min() *Node {
 
 // Last returns the last node less than this node.
 func (n *Node) Last() *Node {
+	if n == nil {
+		return nil
+	}
 	if n.left != nil {
 		return n.left.Max()
 	}
@@ -156,6 +181,9 @@ func (n *Node) Last() *Node {
 
 // Next returns the next node more than this node.
 func (n *Node) Next() *Node {
+	if n == nil {
+		return nil
+	}
 	if n.right != nil {
 		return n.right.Min()
 	}

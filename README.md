@@ -62,7 +62,7 @@ func main() {
 	for _, v := range l {
 		t.Insert(String(v))
 	}
-	iter := t.Root().Min()
+	iter := t.Min()
 	for iter != nil {
 		fmt.Printf("%s\t", iter.Item())
 		iter = iter.Next()

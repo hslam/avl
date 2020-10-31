@@ -169,6 +169,15 @@ func TestDeleteLeft(t *testing.T) {
 func TestEmptyTree(t *testing.T) {
 	tree := New()
 	tree.Delete(Int(0))
+	if tree.Root() != nil {
+		t.Error("")
+	}
+	if tree.Min() != nil {
+		t.Error("")
+	}
+	if tree.Max() != nil {
+		t.Error("")
+	}
 	if tree.Root().Left() != nil {
 		t.Error("")
 	}
@@ -181,6 +190,12 @@ func TestEmptyTree(t *testing.T) {
 	if tree.Root().Item() != nil {
 		t.Error("")
 	}
+	if tree.Root().Last() != nil {
+		t.Error("")
+	}
+	if tree.Root().Next() != nil {
+		t.Error("")
+	}
 	if tree.Length() != 0 {
 		t.Error("")
 	}
@@ -190,7 +205,10 @@ func TestEmptyTree(t *testing.T) {
 	if tree.Root().Min().Parent() != tree.Root() {
 		t.Error("")
 	}
-
+	tree.Clear()
+	if tree.Length() != 0 {
+		t.Error("")
+	}
 }
 
 func BenchmarkAVL(b *testing.B) {
