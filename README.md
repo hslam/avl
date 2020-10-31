@@ -28,11 +28,11 @@ import (
 )
 
 func main() {
-	t := avl.New()
+	tree := avl.New()
 	str := String("Hello World")
-	t.Insert(str)
-	fmt.Println(t.Search(str))
-	t.Delete(str)
+	tree.Insert(str)
+	fmt.Println(tree.Search(str))
+	tree.Delete(str)
 }
 
 type String string
@@ -57,12 +57,12 @@ import (
 )
 
 func main() {
-	t := avl.New()
+	tree := avl.New()
 	l := "MNOLKQPHIA"
 	for _, v := range l {
-		t.Insert(String(v))
+		tree.Insert(String(v))
 	}
-	iter := t.Min()
+	iter := tree.Min()
 	for iter != nil {
 		fmt.Printf("%s\t", iter.Item())
 		iter = iter.Next()
