@@ -242,14 +242,13 @@ func (n *Node) delete(item Item) (root *Node, ok bool) {
 			return nil, true
 		}
 		if n.right == nil {
-			n.left.parent = n
+			n.left.parent = n.parent
 			return n.left, true
 		}
 		if n.left == nil {
-			n.right.parent = n
+			n.right.parent = n.parent
 			return n.right, true
 		}
-		p := n.parent
 		min, right := n.right.deleteMin()
 		min.right = right
 		if right != nil {
@@ -259,7 +258,7 @@ func (n *Node) delete(item Item) (root *Node, ok bool) {
 		if n.left != nil {
 			n.left.parent = min
 		}
-		min.parent = p
+		min.parent = n.parent
 		return min.rebalance(), true
 	}
 
@@ -269,6 +268,9 @@ func (n *Node) deleteMin() (min *Node, parent *Node) {
 	if n.left != nil {
 		min, n.left = n.left.deleteMin()
 		return min, n.rebalance()
+	}
+	if n.right != nil {
+		n.right.parent = n.parent
 	}
 	return n, n.right
 }
