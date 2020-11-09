@@ -290,6 +290,9 @@ func (n *Node) deleteMin() (min *Node, parent *Node) {
 		min, n.left = n.left.deleteMin()
 		return min, n.rebalance()
 	}
+	if n.right != nil {
+		n.right.parent = n.parent
+	}
 	return n, n.right
 }
 
