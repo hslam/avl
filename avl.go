@@ -59,12 +59,26 @@ func (t *Tree) Min() *Node {
 
 // Search searches the Item of the AVL tree.
 func (t *Tree) Search(item Item) Item {
-	return t.root.search(item).Item()
+	return t.search(item).Item()
 }
 
 // SearchNode searches the node of the AVL tree with the item.
 func (t *Tree) SearchNode(item Item) *Node {
-	return t.root.search(item)
+	return t.search(item)
+}
+
+func (t *Tree) search(item Item) *Node {
+	x := t.root
+	for x != nil {
+		if item.Less(x.item) {
+			x = x.left
+		} else if x.item.Less(item) {
+			x = x.right
+		} else {
+			return x
+		}
+	}
+	return nil
 }
 
 // Insert inserts the item into the AVL tree.
@@ -196,19 +210,6 @@ func (n *Node) Next() *Node {
 	return p
 }
 
-func (n *Node) search(item Item) *Node {
-	if n != nil {
-		if item.Less(n.item) {
-			return n.left.search(item)
-		} else if n.item.Less(item) {
-			return n.right.search(item)
-		} else {
-			return n
-		}
-	}
-	return nil
-}
-
 func (n *Node) insert(item Item) (root *Node, ok bool) {
 	if n == nil {
 		return &Node{item: item}, true
@@ -264,24 +265,10 @@ func (n *Node) delete(item Item) (root *Node, ok bool) {
 			}
 			return n.right, true
 		}
-		min, right := n.right.deleteMin()
-		min.right = right
-		if right != nil {
-			right.parent = min
-		}
-		min.left = n.left
-		if n.left != nil {
-			n.left.parent = min
-		}
-		min.parent = p
-		if p != nil {
-			if n == p.left {
-				p.left = min
-			} else {
-				p.right = min
-			}
-		}
-		return min.rebalance(), true
+		var min *Node
+		min, n.right = n.right.deleteMin()
+		n.item = min.item
+		return n.rebalance(), true
 	}
 }
 
