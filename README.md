@@ -1,6 +1,6 @@
 # avl
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/hslam/avl)](https://pkg.go.dev/github.com/hslam/avl)
-[![Build Status](https://travis-ci.org/hslam/avl.svg?branch=master)](https://travis-ci.org/hslam/avl)
+[![Build Status](https://github.com/hslam/avl/workflows/build/badge.svg)](https://github.com/hslam/avl/actions)
 [![codecov](https://codecov.io/gh/hslam/avl/branch/master/graph/badge.svg)](https://codecov.io/gh/hslam/avl)
 [![Go Report Card](https://goreportcard.com/badge/github.com/hslam/avl)](https://goreportcard.com/report/github.com/hslam/avl)
 [![LICENSE](https://img.shields.io/github/license/hslam/avl.svg?style=flat-square)](https://github.com/hslam/avl/blob/master/LICENSE)
