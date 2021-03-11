@@ -219,11 +219,13 @@ func (n *Node) insert(item Item) (root *Node, ok bool) {
 		if n.left.Height() == 0 {
 			n.left.parent = n
 		}
-	} else {
+	} else if n.item.Less(item) {
 		n.right, ok = n.right.insert(item)
 		if n.right.Height() == 0 {
 			n.right.parent = n
 		}
+	} else {
+		n.item = item
 	}
 	return n.rebalance(), ok
 }
